@@ -47,7 +47,6 @@ export default function AnalysisPage() {
 
   // Merge all records by date for charting
   const chartData = (() => {
-    // Only health and exercise metrics for now
     const healthData = health.map(r => ({
       date: new Date(r.timestamp).toLocaleDateString(),
       ...r,
@@ -63,15 +62,49 @@ export default function AnalysisPage() {
       healthMetrics.forEach(m => {
         if (typeof (r as any)[m.key] !== "undefined") (byDate[r.date] as any)[m.key] = (r as any)[m.key];
       });
+      // Add cycleDay if present
+      if (typeof r.cycleDay !== "undefined") byDate[r.date].cycleDay = r.cycleDay;
     });
     exerciseData.forEach(r => {
       if (!byDate[r.date]) byDate[r.date] = { date: r.date };
       exerciseMetrics.forEach(m => {
         if (typeof (r as any)[m.key] !== "undefined") (byDate[r.date] as any)[m.key] = (r as any)[m.key];
       });
+      // Collect exercise types for the day
+      if (r.type) {
+        if (!byDate[r.date].exerciseTypes) byDate[r.date].exerciseTypes = [];
+        if (!byDate[r.date].exerciseTypes.includes(r.type)) byDate[r.date].exerciseTypes.push(r.type);
+      }
     });
     return Object.values(byDate).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
   })();
+
+  // Fetch diet records and add food per day
+  const [diet, setDiet] = useState<DietRecord[]>([]);
+  useEffect(() => {
+    getAllRecords<DietRecord>("red-dragon-health", "diet").then(setDiet);
+  }, []);
+  // Instead of mutating chartData, create a new array with food added
+  const chartDataWithFood = chartData.map((d: any) => {
+    const date = d.date;
+    const food = diet
+      .filter(r => new Date(r.timestamp).toLocaleDateString() === date)
+      .map(r => r.food)
+      .join(", ") || undefined;
+    return { ...d, food };
+  });
+
+  // State for selected date info
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  // Find info for selected date
+  const selectedInfo = selectedDate
+    ? chartDataWithFood.find((d: any) => d.date === selectedDate)
+    : null;
+
+  // Custom handler for X axis click
+  function handleXAxisClick(e: any) {
+    if (e && e.activeLabel) setSelectedDate(e.activeLabel);
+  }
 
   return (
     <main className="min-h-screen bg-gray-50 p-4">
@@ -102,24 +135,46 @@ export default function AnalysisPage() {
         {selectedMetrics.length === 0 ? (
           <p className="text-center text-gray-500">Select one or more metrics to display.</p>
         ) : (
-          <ResponsiveContainer width="100%" height={350}>
-            <LineChart data={chartData} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
-              <XAxis dataKey="date" />
-              <YAxis allowDecimals={false} />
-              <Tooltip />
-              <Legend />
-              {selectedMetrics.map((key, i) => (
-                <Line
-                  key={key}
-                  type="monotone"
-                  dataKey={key}
-                  stroke={["#2563eb", "#f59e42", "#10b981", "#ef4444", "#a21caf"][i % 5]}
-                  strokeWidth={2}
-                  dot={false}
-                />
-              ))}
-            </LineChart>
-          </ResponsiveContainer>
+          <>
+            <ResponsiveContainer width="100%" height={350}>
+              <LineChart data={chartDataWithFood} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}
+                onClick={handleXAxisClick}
+              >
+                <XAxis dataKey="date" />
+                <YAxis allowDecimals={false} />
+                <Tooltip content={null} />
+                <Legend />
+                {selectedMetrics.map((key, i) => (
+                  <Line
+                    key={key}
+                    type="monotone"
+                    dataKey={key}
+                    stroke={["#2563eb", "#f59e42", "#10b981", "#ef4444", "#a21caf"][i % 5]}
+                    strokeWidth={2}
+                    dot={false}
+                  />
+                ))}
+              </LineChart>
+            </ResponsiveContainer>
+            <div className="mt-4 text-center text-sm">
+              {selectedDate && selectedInfo ? (
+                <div className="inline-block bg-gray-100 rounded p-3 shadow">
+                  <div className="font-semibold mb-1">{selectedDate}</div>
+                  {typeof selectedInfo.cycleDay !== "undefined" && (
+                    <div><strong>Cycle Day:</strong> {selectedInfo.cycleDay}</div>
+                  )}
+                  {selectedInfo.food && (
+                    <div><strong>Food:</strong> {selectedInfo.food}</div>
+                  )}
+                  {selectedInfo.exerciseTypes && selectedInfo.exerciseTypes.length > 0 && (
+                    <div><strong>Exercise:</strong> {selectedInfo.exerciseTypes.join(", ")}</div>
+                  )}
+                </div>
+              ) : (
+                <div className="text-gray-400">Click a date on the chart to view details.</div>
+              )}
+            </div>
+          </>
         )}
       </div>
     </main>

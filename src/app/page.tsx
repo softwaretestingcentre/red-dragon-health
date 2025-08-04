@@ -14,6 +14,7 @@ export default function Home() {
           <Link href="/health" className="flex-1 bg-red-500 hover:bg-red-600 text-white font-semibold py-4 rounded-xl shadow text-center text-lg transition">Health</Link>
           <Link href="/diet" className="flex-1 bg-green-500 hover:bg-green-600 text-white font-semibold py-4 rounded-xl shadow text-center text-lg transition">Diet</Link>
           <Link href="/exercise" className="flex-1 bg-blue-500 hover:bg-blue-600 text-white font-semibold py-4 rounded-xl shadow text-center text-lg transition">Exercise</Link>
+          <Link href="/analysis" className="flex-1 bg-purple-500 hover:bg-purple-600 text-white font-semibold py-4 rounded-xl shadow text-center text-lg transition">Analysis</Link>
         </div>
       </div>
       <footer className="mt-16 text-gray-500 text-sm text-center">
