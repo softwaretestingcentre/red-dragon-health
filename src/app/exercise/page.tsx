@@ -2,7 +2,8 @@
 import { useEffect, useState } from "react";
 import { ExerciseRecord } from "../../types";
 import ExerciseEntryForm from "../../components/ExerciseEntryForm";
-import { addRecord as dbAdd, getAllRecords } from "../../lib/db";
+import { addExerciseRecord, getAllExerciseRecords } from "../../lib/apiRecords";
+// import { addRecord as dbAdd, getAllRecords } from "../../lib/db";
 import Link from "next/link";
 
 export default function ExercisePage() {
@@ -10,12 +11,12 @@ export default function ExercisePage() {
   const [search, setSearch] = useState("");
 
   useEffect(() => {
-    getAllRecords<ExerciseRecord>("red-dragon-health", "exercise").then(setRecords);
+    getAllExerciseRecords().then(setRecords);
   }, []);
 
   async function addRecord(record: ExerciseRecord) {
-    await dbAdd("red-dragon-health", "exercise", record);
-    setRecords([record, ...records]);
+    const saved = await addExerciseRecord(record);
+    setRecords([saved, ...records]);
   }
 
   const filtered = records.filter(r => {

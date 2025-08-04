@@ -2,7 +2,8 @@
 import { useEffect, useState } from "react";
 import { HealthRecord } from "../../types";
 import HealthEntryForm from "../../components/HealthEntryForm";
-import { addRecord as dbAdd, getAllRecords } from "../../lib/db";
+import { addHealthRecord, getAllHealthRecords } from "../../lib/apiRecords";
+// import { addRecord as dbAdd, getAllRecords } from "../../lib/db";
 import Link from "next/link";
 
 export default function HealthPage() {
@@ -10,12 +11,12 @@ export default function HealthPage() {
   const [search, setSearch] = useState("");
 
   useEffect(() => {
-    getAllRecords<HealthRecord>("red-dragon-health", "health").then(setRecords);
+    getAllHealthRecords().then(setRecords);
   }, []);
 
   async function addRecord(record: HealthRecord) {
-    await dbAdd("red-dragon-health", "health", record);
-    setRecords([record, ...records]);
+    const saved = await addHealthRecord(record);
+    setRecords([saved, ...records]);
   }
 
   const filtered = records.filter(r => {

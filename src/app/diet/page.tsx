@@ -2,7 +2,8 @@
 import { useEffect, useState } from "react";
 import { DietRecord } from "../../types";
 import DietEntryForm from "../../components/DietEntryForm";
-import { addRecord as dbAdd, getAllRecords } from "../../lib/db";
+import { addDietRecord, getAllDietRecords } from "../../lib/apiRecords";
+// import { addRecord as dbAdd, getAllRecords } from "../../lib/db";
 import Link from "next/link";
 
 export default function DietPage() {
@@ -10,12 +11,12 @@ export default function DietPage() {
   const [search, setSearch] = useState("");
 
   useEffect(() => {
-    getAllRecords<DietRecord>("red-dragon-health", "diet").then(setRecords);
+    getAllDietRecords().then(setRecords);
   }, []);
 
   async function addRecord(record: DietRecord) {
-    await dbAdd("red-dragon-health", "diet", record);
-    setRecords([record, ...records]);
+    const saved = await addDietRecord(record);
+    setRecords([saved, ...records]);
   }
 
   const filtered = records.filter(r => {

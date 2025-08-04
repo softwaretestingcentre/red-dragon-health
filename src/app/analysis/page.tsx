@@ -2,7 +2,8 @@
 "use client";
 import { useEffect, useState } from "react";
 import { DietRecord, HealthRecord, ExerciseRecord } from "../../types";
-import { getAllRecords } from "../../lib/db";
+import { getAllHealthRecords, getAllDietRecords, getAllExerciseRecords } from "../../lib/apiRecords";
+// import { getAllRecords } from "../../lib/db";
 import {
   LineChart,
   Line,
@@ -35,8 +36,8 @@ export default function AnalysisPage() {
   // Diet metrics omitted as there are no numeric fields
 
   useEffect(() => {
-    getAllRecords<HealthRecord>("red-dragon-health", "health").then(setHealth);
-    getAllRecords<ExerciseRecord>("red-dragon-health", "exercise").then(setExercise);
+    getAllHealthRecords().then(setHealth);
+    getAllExerciseRecords().then(setExercise);
   }, []);
 
   // Merge all records by date for charting
@@ -73,7 +74,7 @@ export default function AnalysisPage() {
   // Fetch diet records and add food per day
   const [diet, setDiet] = useState<DietRecord[]>([]);
   useEffect(() => {
-    getAllRecords<DietRecord>("red-dragon-health", "diet").then(setDiet);
+    getAllDietRecords().then(setDiet);
   }, []);
   // Instead of mutating chartData, create a new array with food added
   const chartDataWithFood = chartData.map((d: any) => {
