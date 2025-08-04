@@ -36,7 +36,7 @@ export default function ExerciseEntryForm({ onAdd }: { onAdd: (record: ExerciseR
       timestamp: new Date().toISOString(),
       type,
       reps: Number(reps),
-      timeMinutes: Number(timeMinutes),
+      timeminutes: Number(timeMinutes),
       notes: notes.trim() || undefined,
     };
     onAdd(record);

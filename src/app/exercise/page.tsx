@@ -24,7 +24,7 @@ export default function ExercisePage() {
     return (
       (r.type?.toLowerCase().includes(q) ?? false) ||
       (r.reps?.toString().includes(q) ?? false) ||
-      (r.timeMinutes?.toString().includes(q) ?? false) ||
+      (r.timeminutes?.toString().includes(q) ?? false) ||
       (r.notes?.toLowerCase().includes(q) ?? false) ||
       (r.timestamp && new Date(r.timestamp).toLocaleDateString().includes(q))
     );
@@ -47,7 +47,7 @@ export default function ExercisePage() {
             <li key={r.id} className="bg-white rounded shadow p-3 flex flex-col">
               <span className="text-xs text-gray-500">{new Date(r.timestamp).toLocaleString()}</span>
               <span className="font-semibold">{r.type}</span>
-              <span className="text-sm">{r.reps} reps, {r.timeMinutes} min</span>
+              <span className="text-sm">{r.reps > 1 ? `${r.reps} reps, ` : ``}{r.timeminutes} mins</span>
               {r.notes && <span className="text-xs text-gray-600 mt-1">{r.notes}</span>}
             </li>
           ))}

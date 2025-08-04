@@ -25,6 +25,6 @@ export type ExerciseRecord = {
   timestamp: string;
   type: string;
   reps: number;
-  timeMinutes: number;
+  timeminutes: number;
   notes?: string;
 };

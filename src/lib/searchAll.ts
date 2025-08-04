@@ -50,7 +50,7 @@ export async function searchAllRecords(query: string) {
     ...exercise.filter(r =>
       r.type.toLowerCase().includes(q) ||
       r.reps.toString().includes(q) ||
-      r.timeMinutes.toString().includes(q) ||
+      r.timeminutes.toString().includes(q) ||
       (r.notes?.toLowerCase().includes(q) ?? false) ||
       new Date(r.timestamp).toLocaleDateString().includes(q)
     ).map(r => ({ ...r, _type: "exercise" })),
