@@ -36,7 +36,7 @@ export default function HealthPage() {
 
   return (
     <main className="min-h-screen bg-gray-50 p-4">
-      <h1 className="text-2xl font-bold mb-4 text-center">Health Records</h1>
+      <h1 className="text-2xl font-bold mb-4 text-center">Red Dragon Health</h1>
       <HealthEntryForm onAdd={addRecord} />
       <input
         type="text"

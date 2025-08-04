@@ -100,7 +100,7 @@ export default function AnalysisPage() {
 
   return (
     <main className="min-h-screen bg-gray-50 p-4">
-      <h1 className="text-2xl font-bold mb-4 text-center">Analysis</h1>
+      <h1 className="text-2xl font-bold mb-4 text-center">Red Dragon Health</h1>
       <div className="mb-4 max-w-md mx-auto">
         <label className="block text-sm font-medium mb-2">Select metrics to display:</label>
         <div className="flex flex-wrap gap-2">

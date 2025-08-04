@@ -22,18 +22,18 @@ export default function ExercisePage() {
   const filtered = records.filter(r => {
     const q = search.toLowerCase();
     return (
-      r.type.toLowerCase().includes(q) ||
-      r.reps.toString().includes(q) ||
-      r.timeMinutes.toString().includes(q) ||
+      (r.type?.toLowerCase().includes(q) ?? false) ||
+      (r.reps?.toString().includes(q) ?? false) ||
+      (r.timeMinutes?.toString().includes(q) ?? false) ||
       (r.notes?.toLowerCase().includes(q) ?? false) ||
-      new Date(r.timestamp).toLocaleDateString().includes(q)
+      (r.timestamp && new Date(r.timestamp).toLocaleDateString().includes(q))
     );
   });
 
   return (
     <>
       <main className="min-h-screen bg-gray-50 p-4">
-        <h1 className="text-2xl font-bold mb-4 text-center">Exercise Records</h1>
+        <h1 className="text-2xl font-bold mb-4 text-center">Red Dragon Health</h1>
         <ExerciseEntryForm onAdd={addRecord} />
         <input
           type="text"

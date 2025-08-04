@@ -30,7 +30,7 @@ export default function DietPage() {
 
   return (
     <main className="min-h-screen bg-gray-50 p-4">
-      <h1 className="text-2xl font-bold mb-4 text-center">Diet Records</h1>
+      <h1 className="text-2xl font-bold mb-4 text-center">Red Dragon Health</h1>
       <DietEntryForm onAdd={addRecord} />
       <input
         type="text"
