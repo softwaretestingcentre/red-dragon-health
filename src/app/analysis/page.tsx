@@ -12,6 +12,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import Link from "next/link";
 
 const healthMetrics = [
   { key: "energy", label: "Energy Level" },
@@ -166,6 +167,9 @@ export default function AnalysisPage() {
             </div>
           </>
         )}
+      </div>
+      <div className="mt-8 flex justify-center">
+        <Link href="/" className="bg-gray-800 hover:bg-gray-900 text-white font-semibold py-2 px-6 rounded-xl shadow text-center text-lg transition" style={{ color: '#fff' }}>Back to Home</Link>
       </div>
     </main>
   );

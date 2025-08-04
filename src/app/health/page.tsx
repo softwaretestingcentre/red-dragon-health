@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { HealthRecord } from "../../types";
 import HealthEntryForm from "../../components/HealthEntryForm";
 import { addRecord as dbAdd, getAllRecords } from "../../lib/db";
+import Link from "next/link";
 
 export default function HealthPage() {
   const [records, setRecords] = useState<HealthRecord[]>([]);
@@ -61,6 +62,9 @@ export default function HealthPage() {
           </li>
         ))}
       </ul>
+      <div className="mt-8 flex justify-center">
+        <Link href="/" className="bg-gray-800 hover:bg-gray-900 text-white font-semibold py-2 px-6 rounded-xl shadow text-center text-lg transition" style={{ color: '#fff' }}>Back to Home</Link>
+      </div>
     </main>
   );
 }
