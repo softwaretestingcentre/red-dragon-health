@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { useEffect, useState } from "react";
 import { DietRecord, HealthRecord, ExerciseRecord } from "../../types";
@@ -12,9 +13,6 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-const dietMetrics = [
-  // No numeric metrics in DietRecord after calories removal
-];
 const healthMetrics = [
   { key: "energy", label: "Energy Level" },
   { key: "mood", label: "Mood" },
@@ -24,14 +22,9 @@ const healthMetrics = [
   { key: "pooCount", label: "Poo Count" },
   { key: "pooRating", label: "Poo Rating" },
 ];
-const exerciseMetrics = [
-  // { key: "reps", label: "Reps" },
-  // { key: "timeMinutes", label: "Time (min)" },
-];
 
 const allMetrics = [
   ...healthMetrics.map(m => ({ ...m, type: "health" })),
-  ...exerciseMetrics.map(m => ({ ...m, type: "exercise" })),
 ];
 
 export default function AnalysisPage() {
@@ -67,9 +60,6 @@ export default function AnalysisPage() {
     });
     exerciseData.forEach(r => {
       if (!byDate[r.date]) byDate[r.date] = { date: r.date };
-      exerciseMetrics.forEach(m => {
-        if (typeof (r as any)[m.key] !== "undefined") (byDate[r.date] as any)[m.key] = (r as any)[m.key];
-      });
       // Collect exercise types for the day
       if (r.type) {
         if (!byDate[r.date].exerciseTypes) byDate[r.date].exerciseTypes = [];
@@ -142,7 +132,7 @@ export default function AnalysisPage() {
               >
                 <XAxis dataKey="date" />
                 <YAxis allowDecimals={false} />
-                <Tooltip content={null} />
+                <Tooltip content={undefined} />
                 <Legend />
                 {selectedMetrics.map((key, i) => (
                   <Line

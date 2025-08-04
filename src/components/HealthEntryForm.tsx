@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { HealthRecord } from "../../types";
+import { HealthRecord } from "../types";
 
 const moodEmojis = ["😡", "😢", "😐", "😊", "🤩"];
 const ratingEmojis = ["😖", "😕", "😐", "🙂", "😃"];

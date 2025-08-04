@@ -43,7 +43,7 @@ export async function searchAllRecords(query: string) {
     ).map(r => ({ ...r, _type: "health" })),
     ...diet.filter(r =>
       r.food.toLowerCase().includes(q) ||
-      r.calories.toString().includes(q) ||
+      r.calories?.toString().includes(q) ||
       (r.notes?.toLowerCase().includes(q) ?? false) ||
       new Date(r.timestamp).toLocaleDateString().includes(q)
     ).map(r => ({ ...r, _type: "diet" })),

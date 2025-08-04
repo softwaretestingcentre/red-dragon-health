@@ -2,6 +2,7 @@ export type DietRecord = {
   id: string;
   timestamp: string; // ISO string
   food: string;
+  calories?: number; // Optional, can be undefined
   notes?: string;
 };
 
