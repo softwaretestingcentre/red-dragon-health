@@ -21,8 +21,6 @@ const healthMetrics = [
   { key: "pain", label: "Pain" },
   { key: "sleep", label: "Sleep" },
   { key: "allergy", label: "Allergy" },
-  { key: "pooCount", label: "Poo Count" },
-  { key: "pooRating", label: "Poo Rating" },
 ];
 
 const allMetrics = [
@@ -141,7 +139,7 @@ export default function AnalysisPage() {
                     key={key}
                     type="monotone"
                     dataKey={key}
-                    stroke={["#2563eb", "#f59e42", "#10b981", "#ef4444", "#a21caf"][i % 5]}
+                    stroke={{"sleep": "#2563eb", "energy": "#f59e42", "allergy": "#10b981", "pain": "#ef4444", "mood": "#a21caf"}[key]}
                     strokeWidth={2}
                     dot={false}
                   />
