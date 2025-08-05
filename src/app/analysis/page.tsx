@@ -68,7 +68,7 @@ export default function AnalysisPage() {
         if (!byDate[r.date].exerciseTypes.includes(r.type)) byDate[r.date].exerciseTypes.push(r.type);
       }
     });
-    return Object.values(byDate).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    return Object.values(byDate).sort((a, b) => new Date(a.date).getDate() - new Date(b.date).getDate());
   })();
 
   // Fetch diet records and add food per day
@@ -133,7 +133,7 @@ export default function AnalysisPage() {
                 onClick={handleXAxisClick}
               >
                 <XAxis dataKey="date" />
-                <YAxis allowDecimals={false} />
+                <YAxis allowDecimals={false} domain={[0, 5]} />
                 <Tooltip content={undefined} />
                 <Legend />
                 {selectedMetrics.map((key, i) => (
