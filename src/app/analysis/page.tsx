@@ -28,7 +28,7 @@ const allMetrics = [
 ];
 
 export default function AnalysisPage() {
-  const [selectedMetrics, setSelectedMetrics] = useState<string[]>(["energy"]);
+  const [selectedMetrics, setSelectedMetrics] = useState<string[]>(healthMetrics.map(m => m.key));
   const [health, setHealth] = useState<HealthRecord[]>([]);
   const [exercise, setExercise] = useState<ExerciseRecord[]>([]);
   // Diet metrics omitted as there are no numeric fields
