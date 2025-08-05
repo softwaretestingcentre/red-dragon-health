@@ -1,7 +1,6 @@
 "use client";
 import { useState } from "react";
 import { ExerciseRecord } from "../types";
-import { get } from "http";
 
 const defaultTypes = [
   { label: "Yoga 🧘‍♀️", value: "Yoga" },
