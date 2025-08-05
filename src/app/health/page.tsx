@@ -16,7 +16,9 @@ export default function HealthPage() {
 
   async function addRecord(record: HealthRecord) {
     const saved = await addHealthRecord(record);
-    setRecords([saved, ...records]);
+    if (saved.success) {
+      setRecords([record, ...records]);
+    }
   }
 
   const filtered = records.filter(r => {

@@ -9,6 +9,15 @@ const allergyEmojis = ["🤧", "😕", "😐", "🙂", "😃"];
 const pooEmojis = ["💩", "💩", "💩", "💩", "💩"];
 const energyEmojis = ["🥱", "😪", "😐", "🙂", "⚡️"];
 
+// Polyfill for crypto.randomUUID if not available
+function getUUID() {
+  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+    return crypto.randomUUID();
+  }
+  // Fallback: simple random string (not RFC compliant)
+  return 'id-' + Math.random().toString(36).substr(2, 16);
+}
+
 export default function HealthEntryForm({ onAdd }: { onAdd: (record: HealthRecord) => void }) {
   const [energy, setEnergy] = useState(3);
   const [mood, setMood] = useState(3);
@@ -23,7 +32,7 @@ export default function HealthEntryForm({ onAdd }: { onAdd: (record: HealthRecor
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     const record: HealthRecord = {
-      id: crypto.randomUUID(),
+      id: getUUID(),
       timestamp: new Date().toISOString(),
       energy: energy as 1|2|3|4|5,
       mood: mood as 1|2|3|4|5,

@@ -16,7 +16,9 @@ export default function ExercisePage() {
 
   async function addRecord(record: ExerciseRecord) {
     const saved = await addExerciseRecord(record);
-    setRecords([saved, ...records]);
+    if (saved.success) {
+      setRecords([record, ...records]);
+    }
   }
 
   const filtered = records.filter(r => {

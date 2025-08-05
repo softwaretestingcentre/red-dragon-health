@@ -6,6 +6,15 @@ import { addDietRecord, getAllDietRecords } from "../../lib/apiRecords";
 // import { addRecord as dbAdd, getAllRecords } from "../../lib/db";
 import Link from "next/link";
 
+// Polyfill for crypto.randomUUID if not available
+function getUUID() {
+  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+    return crypto.randomUUID();
+  }
+  // Fallback: simple random string (not RFC compliant)
+  return 'id-' + Math.random().toString(36).substr(2, 16);
+}
+
 export default function DietPage() {
   const [records, setRecords] = useState<DietRecord[]>([]);
   const [search, setSearch] = useState("");
@@ -15,16 +24,20 @@ export default function DietPage() {
   }, []);
 
   async function addRecord(record: DietRecord) {
+    // Ensure record has a unique id
+    if (!record.id) record.id = getUUID();
     const saved = await addDietRecord(record);
-    setRecords([saved, ...records]);
+    if (saved.success) {
+      setRecords([record, ...records]);
+    }
   }
 
   const filtered = records.filter(r => {
     const q = search.toLowerCase();
     return (
-      r.food.toLowerCase().includes(q) ||
+      r.food?.toLowerCase().includes(q) ||
       (r.notes?.toLowerCase().includes(q) ?? false) ||
-      new Date(r.timestamp).toLocaleDateString().includes(q)
+      new Date(r.timestamp ?? "").toLocaleDateString().includes(q)
     );
   });
 
@@ -40,7 +53,7 @@ export default function DietPage() {
         className="w-full max-w-md mx-auto block my-6 border rounded px-3 py-2"
       />
       <ul className="mt-2 space-y-2">
-        {filtered.map(r => (
+        {filtered.map(r => r.id && (
           <li key={r.id} className="bg-white rounded shadow p-3 flex flex-col">
             <span className="text-xs text-gray-500">{new Date(r.timestamp).toLocaleString()}</span>
             <span className="font-semibold">{r.food}</span>

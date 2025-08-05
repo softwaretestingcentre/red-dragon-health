@@ -134,7 +134,7 @@ export default function AnalysisPage() {
                 <YAxis allowDecimals={false} domain={[0, 5]} />
                 <Tooltip content={undefined} />
                 <Legend />
-                {selectedMetrics.map((key, i) => (
+                {selectedMetrics.map((key) => (
                   <Line
                     key={key}
                     type="monotone"

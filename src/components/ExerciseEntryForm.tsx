@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { ExerciseRecord } from "../types";
+import { get } from "http";
 
 const defaultTypes = [
   { label: "Yoga 🧘‍♀️", value: "Yoga" },
@@ -10,6 +11,15 @@ const defaultTypes = [
   { label: "Swimming 🏊‍♀️", value: "Swimming" },
   { label: "Dancing 💃", value: "Dancing" },
 ];
+
+// Polyfill for crypto.randomUUID if not available
+function getUUID() {
+  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+    return crypto.randomUUID();
+  }
+  // Fallback: simple random string (not RFC compliant)
+  return 'id-' + Math.random().toString(36).substr(2, 16);
+}
 
 export default function ExerciseEntryForm({ onAdd }: { onAdd: (record: ExerciseRecord) => void }) {
   const [types, setTypes] = useState<{label: string, value: string}[]>([...defaultTypes]);
@@ -32,7 +42,7 @@ export default function ExerciseEntryForm({ onAdd }: { onAdd: (record: ExerciseR
     e.preventDefault();
     if (!type || !reps || !timeMinutes) return;
     const record: ExerciseRecord = {
-      id: crypto.randomUUID(),
+      id: getUUID(),
       timestamp: new Date().toISOString(),
       type,
       reps: Number(reps),

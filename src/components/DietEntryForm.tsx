@@ -2,6 +2,15 @@
 import { useState } from "react";
 import { DietRecord } from "../types";
 
+// Polyfill for crypto.randomUUID if not available
+function getUUID() {
+  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+    return crypto.randomUUID();
+  }
+  // Fallback: simple random string (not RFC compliant)
+  return 'id-' + Math.random().toString(36).substr(2, 16);
+}
+
 export default function DietEntryForm({ onAdd }: { onAdd: (record: DietRecord) => void }) {
   const [food, setFood] = useState("");
   const [notes, setNotes] = useState("");
@@ -10,7 +19,7 @@ export default function DietEntryForm({ onAdd }: { onAdd: (record: DietRecord) =
     e.preventDefault();
     if (!food) return;
     const record: DietRecord = {
-      id: crypto.randomUUID(),
+      id: getUUID(),
       timestamp: new Date().toISOString(),
       food,
       notes: notes.trim() || undefined,
