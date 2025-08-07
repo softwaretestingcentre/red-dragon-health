@@ -28,7 +28,7 @@ const allMetrics = [
 ];
 
 export default function AnalysisPage() {
-  const [selectedMetrics, setSelectedMetrics] = useState<string[]>(["energy"]);
+  const [selectedMetrics, setSelectedMetrics] = useState<string[]>(healthMetrics.map(m => m.key));
   const [health, setHealth] = useState<HealthRecord[]>([]);
   const [exercise, setExercise] = useState<ExerciseRecord[]>([]);
   // Diet metrics omitted as there are no numeric fields
@@ -40,33 +40,37 @@ export default function AnalysisPage() {
 
   // Merge all records by date for charting
   const chartData = (() => {
+    // Use ISO date string for sorting and grouping
+    const toISO = (ts: string | number | Date) => {
+      const d = new Date(ts);
+      return d.toISOString().slice(0, 10); // YYYY-MM-DD
+    };
     const healthData = health.map(r => ({
-      date: new Date(r.timestamp).toLocaleDateString(),
+      isoDate: toISO(r.timestamp),
       ...r,
     }));
     const exerciseData = exercise.map(r => ({
-      date: new Date(r.timestamp).toLocaleDateString(),
+      isoDate: toISO(r.timestamp),
       ...r,
     }));
-    // Group by date
+    // Group by isoDate
     const byDate: Record<string, any> = {};
     healthData.forEach(r => {
-      if (!byDate[r.date]) byDate[r.date] = { date: r.date };
+      if (!byDate[r.isoDate]) byDate[r.isoDate] = { isoDate: r.isoDate };
       healthMetrics.forEach(m => {
-        if (typeof (r as any)[m.key] !== "undefined") (byDate[r.date] as any)[m.key] = (r as any)[m.key];
+        if (typeof (r as any)[m.key] !== "undefined") (byDate[r.isoDate] as any)[m.key] = (r as any)[m.key];
       });
-      // Add cycleDay if present
-      if (typeof r.cycleDay !== "undefined") byDate[r.date].cycleDay = r.cycleDay;
+      if (typeof r.cycleDay !== "undefined") byDate[r.isoDate].cycleDay = r.cycleDay;
     });
     exerciseData.forEach(r => {
-      if (!byDate[r.date]) byDate[r.date] = { date: r.date };
-      // Collect exercise types for the day
+      if (!byDate[r.isoDate]) byDate[r.isoDate] = { isoDate: r.isoDate };
       if (r.type) {
-        if (!byDate[r.date].exerciseTypes) byDate[r.date].exerciseTypes = [];
-        if (!byDate[r.date].exerciseTypes.includes(r.type)) byDate[r.date].exerciseTypes.push(r.type);
+        if (!byDate[r.isoDate].exerciseTypes) byDate[r.isoDate].exerciseTypes = [];
+        if (!byDate[r.isoDate].exerciseTypes.includes(r.type)) byDate[r.isoDate].exerciseTypes.push(r.type);
       }
     });
-    return Object.values(byDate).sort((a, b) => new Date(a.date).getDate() - new Date(b.date).getDate());
+    // Sort by isoDate ascending
+    return Object.values(byDate).sort((a, b) => a.isoDate.localeCompare(b.isoDate));
   })();
 
   // Fetch diet records and add food per day
@@ -76,12 +80,17 @@ export default function AnalysisPage() {
   }, []);
   // Instead of mutating chartData, create a new array with food added
   const chartDataWithFood = chartData.map((d: any) => {
-    const date = d.date;
+    const isoDate = d.isoDate;
     const food = diet
-      .filter(r => new Date(r.timestamp).toLocaleDateString() === date)
+      .filter(r => {
+        const rIso = new Date(r.timestamp).toISOString().slice(0, 10);
+        return rIso === isoDate;
+      })
       .map(r => r.food)
       .join(", ") || undefined;
-    return { ...d, food };
+    // For display, add a formatted date string (e.g. locale)
+    const displayDate = new Date(isoDate).toLocaleDateString();
+    return { ...d, food, date: displayDate };
   });
 
   // State for selected date info
